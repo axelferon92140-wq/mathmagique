@@ -38,6 +38,18 @@ display:flex;
 background:#1e293b;
 }
 
+.menu-img{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+.menu-img img{
+  width:100%;
+  border-radius:12px;
+}
+
 nav button{flex:1;}
 
 @keyframes fade{
