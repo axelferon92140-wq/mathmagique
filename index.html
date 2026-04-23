@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>MathMagique PRO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+font-family:-apple-system, BlinkMacSystemFont;
+background:#0f172a;
+color:white;
+}
+
+header{
+text-align:center;
+padding:15px;
+font-size:18px;
+font-weight:bold;
+background:#1e293b;
+}
+
+.section{
+display:none;
+padding:20px;
+min-height:calc(100vh - 120px);
+}
+
+.active{display:block;}
+
+.card{
+background:#1e293b;
+padding:15px;
+border-radius:15px;
+margin-top:10px;
+}
+
+.nav{
+display:flex;
+position:fixed;
+bottom:0;
+width:100%;
+background:#1e293b;
+}
+
+.nav button{
+flex:1;
+padding:15px;
+border:none;
+background:#1e293b;
+color:white;
+font-size:18px;
+}
+
+button.main{
+background:#22c55e;
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:10px;
+width:100%;
+color:white;
+font-size:16px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+font-size:18px;
+}
+
+#avatar{
+font-size:60px;
+text-align:center;
+margin-top:10px;
+}
+
+.progress{
+height:10px;
+background:#334155;
+border-radius:10px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+background:#22c55e;
+width:0%;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>✨ MathMagique</header>
+
+<!-- COURS -->
+<div id="cours" class="section active">
+
+<div class="card">
+<h3>📚 Addition</h3>
+<p>Addition = ajouter des nombres</p>
+<p>Ex : 2 + 3 = 5</p>
+</div>
+
+<div class="card">
+<h3>📚 Multiplication</h3>
+<p>Multiplier = répéter</p>
+<p>Ex : 3 × 4 = 12</p>
+</div>
+
+<div class="card">
+<h3>📚 Division</h3>
+<p>Partager en parts égales</p>
+<p>Ex : 10 ÷ 2 = 5</p>
+</div>
+
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="section">
+<div class="card">
+
+<h2 id="q"></h2>
+
+<input type="number" id="rep">
+
+<button class="main" onclick="check()">Valider</button>
+
+<p id="feedback"></p>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<p id="xp"></p>
+
+</div>
+</div>
+
+<!-- PROFIL -->
+<div id="profil" class="section">
+
+<div id="avatar">🙂</div>
+
+<div class="card">
+<p id="level"></p>
+<p id="rank"></p>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+<button onclick="show('cours')">📚</button>
+<button onclick="show('quiz')">🎮</button>
+<button onclick="show('profil')">👤</button>
+</div>
+
+<audio id="good" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+<audio id="bad" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+<script>
+
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+// DATA
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let correct;
+
+// QUESTIONS
+function newQ(){
+let a=Math.floor(Math.random()*10);
+let b=Math.floor(Math.random()*10);
+correct = a+b;
+document.getElementById("q").innerText = a + " + " + b;
+}
+
+// CHECK
+function check(){
+let r=parseInt(document.getElementById("rep").value);
+
+if(r===correct){
+xp++;
+document.getElementById("feedback").innerText="✅ Correct";
+document.getElementById("good").play();
+}else{
+document.getElementById("feedback").innerText="❌ " + correct;
+document.getElementById("bad").play();
+}
+
+localStorage.setItem("xp", xp);
+updateUI();
+newQ();
+}
+
+// UI
+function updateUI(){
+
+let level = Math.floor(xp/5);
+let progress = (xp % 5) * 20;
+
+document.getElementById("xp").innerText = "XP: " + xp;
+document.getElementById("level").innerText = "Niveau: " + level;
+
+document.getElementById("bar").style.width = progress + "%";
+
+// AVATAR EVOLUTION
+let avatar = "🙂";
+let rank = "Débutant";
+
+if(xp >= 10){
+avatar="😎";
+rank="Apprenti";
+}
+if(xp >= 20){
+avatar="🤖";
+rank="Expert";
+}
+if(xp >= 40){
+avatar="👑";
+rank="Maître";
+}
+
+document.getElementById("avatar").innerText = avatar;
+document.getElementById("rank").innerText = rank;
+
+}
+
+updateUI();
+newQ();
+
+</script>
+
+</body>
+</html>
