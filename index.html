@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>MathMagique ULTRA</title>
+<title>MathMagique PRO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -18,9 +18,10 @@ text-align:center;
 padding:15px;
 background:#1e293b;
 font-weight:bold;
+font-size:18px;
 }
 
-.section{display:none;padding:20px;}
+.section{display:none;padding:15px;}
 .active{display:block;}
 
 .card{
@@ -32,12 +33,13 @@ margin-top:10px;
 
 button{
 width:100%;
-padding:12px;
+padding:14px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 margin-top:10px;
 background:#22c55e;
 color:white;
+font-size:16px;
 }
 
 .nav{
@@ -48,10 +50,7 @@ display:flex;
 background:#1e293b;
 }
 
-.nav button{
-flex:1;
-background:#1e293b;
-}
+.nav button{flex:1;background:#1e293b;}
 
 .progress{
 height:10px;
@@ -66,15 +65,22 @@ background:#22c55e;
 width:0%;
 }
 
-.hearts{text-align:center;font-size:20px;}
+.hearts{text-align:center;font-size:22px;}
 #avatar{text-align:center;font-size:60px;}
+
+img{
+width:100%;
+border-radius:12px;
+margin-top:10px;
+}
+
 .lock{opacity:0.4;}
 </style>
 </head>
 
 <body>
 
-<header>🔥 MathMagique</header>
+<header>🔥 MathMagique PRO</header>
 
 <!-- HOME -->
 <div id="home" class="section active">
@@ -106,7 +112,7 @@ width:0%;
 <div id="quiz" class="section">
 <div class="card">
 <h2 id="q"></h2>
-<input id="rep" type="number">
+<input id="rep" type="number" placeholder="Ta réponse">
 <button onclick="check()">Valider</button>
 <p id="feedback"></p>
 
@@ -131,6 +137,7 @@ width:0%;
 <button onclick="show('profil')">👤</button>
 </div>
 
+<!-- SOUNDS -->
 <audio id="good" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="bad" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
@@ -170,7 +177,7 @@ html += `<button ${locked?'class="lock"':''} onclick="openLesson('${l.id}',${loc
 document.getElementById("levels").innerHTML=html;
 }
 
-// LESSON CONTENT
+// LESSON CONTENT (AVEC IMAGES)
 function openLesson(id,locked){
 if(locked){alert("🔒 Niveau verrouillé");return;}
 
@@ -178,10 +185,42 @@ currentLesson=id;
 show("lesson");
 
 let c="";
-if(id==="add") c="<h3>Addition</h3><p>2+3=5</p>";
-if(id==="multi") c="<h3>Multiplication</h3><p>3×4=12</p>";
-if(id==="fraction") c="<h3>Fractions</h3><p>1/2+1/2=1</p>";
-if(id==="equation") c="<h3>Équations</h3><p>x+2=5 → x=3</p>";
+
+if(id==="add"){
+c=`
+<h3>Addition</h3>
+<p>L'addition consiste à additionner deux nombres.</p>
+<p>Exemple : 2 + 3 = 5</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Elementary_addition.svg">
+`;
+}
+
+if(id==="multi"){
+c=`
+<h3>Multiplication</h3>
+<p>Multiplier, c’est additionner plusieurs fois.</p>
+<p>Exemple : 3 × 4 = 12</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/06/Multiplication_3x4.svg">
+`;
+}
+
+if(id==="fraction"){
+c=`
+<h3>Fractions</h3>
+<p>Une fraction représente une partie.</p>
+<p>1/2 + 1/2 = 1</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Fraction_1_2.svg">
+`;
+}
+
+if(id==="equation"){
+c=`
+<h3>Équations</h3>
+<p>Une équation contient une inconnue.</p>
+<p>x + 2 = 5 → x = 3</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Linear_equation_graph.svg">
+`;
+}
 
 document.getElementById("lessonContent").innerHTML=c;
 }
@@ -193,15 +232,28 @@ newQ();
 }
 
 function newQ(){
-let a=Math.floor(Math.random()*10);
-let b=Math.floor(Math.random()*10);
+let a=Math.floor(Math.random()*10)+1;
+let b=Math.floor(Math.random()*10)+1;
 
-if(currentLesson==="add") correct=a+b;
-if(currentLesson==="multi") correct=a*b;
-if(currentLesson==="fraction") correct=1;
-if(currentLesson==="equation") correct=3;
+if(currentLesson==="add"){
+correct=a+b;
+document.getElementById("q").innerText = a+" + "+b;
+}
 
-document.getElementById("q").innerText = a+" ? "+b;
+if(currentLesson==="multi"){
+correct=a*b;
+document.getElementById("q").innerText = a+" × "+b;
+}
+
+if(currentLesson==="fraction"){
+correct=1;
+document.getElementById("q").innerText = "1/2 + 1/2";
+}
+
+if(currentLesson==="equation"){
+correct=3;
+document.getElementById("q").innerText = "x + 2 = 5 → x = ?";
+}
 }
 
 function check(){
@@ -209,9 +261,11 @@ let r=parseInt(document.getElementById("rep").value);
 
 if(r===correct){
 state.xp++;
+document.getElementById("feedback").innerText="✅ Bonne réponse";
 document.getElementById("good").play();
 }else{
 state.hearts--;
+document.getElementById("feedback").innerText="❌ Mauvaise réponse ( "+correct+" )";
 document.getElementById("bad").play();
 }
 
