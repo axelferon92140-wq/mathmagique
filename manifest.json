@@ -1,0 +1,8 @@
+{
+  "name": "MathMagique",
+  "short_name": "Math",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#F8F5FF",
+  "theme_color": "#6C63FF"
+}
