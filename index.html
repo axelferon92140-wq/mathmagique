@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MathMagique PRO</title>
+<title>MathMagique</title>
 
 <style>
 body{
@@ -13,20 +13,17 @@ background:#0f172a;
 color:white;
 }
 
-/* HEADER */
 header{
 text-align:center;
-padding:18px;
+padding:20px;
 font-size:22px;
 font-weight:bold;
 background:#1e293b;
 }
 
-/* SECTIONS */
 .section{display:none;padding:15px;}
 .active{display:block;}
 
-/* CARD */
 .card{
 background:#1e293b;
 padding:20px;
@@ -34,7 +31,6 @@ border-radius:18px;
 margin-bottom:15px;
 }
 
-/* GROS BOUTONS */
 button{
 width:100%;
 padding:18px;
@@ -47,7 +43,6 @@ background:#22c55e;
 color:white;
 }
 
-/* INPUT FIX */
 input{
 width:100%;
 padding:18px;
@@ -58,7 +53,6 @@ margin-top:10px;
 color:black;
 }
 
-/* NAV */
 .nav{
 position:fixed;
 bottom:0;
@@ -73,7 +67,6 @@ font-size:20px;
 padding:15px;
 }
 
-/* PROGRESS */
 .bar{
 height:12px;
 background:#22c55e;
@@ -81,109 +74,105 @@ width:0%;
 border-radius:10px;
 }
 
-/* TITRES */
-h2{
-font-size:24px;
-margin-bottom:10px;
-}
-
-p{
-font-size:17px;
-line-height:1.5;
-}
+h2{font-size:24px;}
+h3{margin-top:15px;}
+p{font-size:17px;line-height:1.5;}
 </style>
 </head>
 
 <body>
 
-<header>🧠 MathMagique PRO</header>
+<header>🧠 MathMagique</header>
 
-<!-- HOME -->
-<div id="home" class="section active">
+<!-- ACCUEIL -->
+<div id="accueil" class="section active">
 <div class="card">
 <h2>Progression</h2>
-<p>XP: <span id="xp"></span></p>
-<p>Difficulté: <span id="diff"></span></p>
+<p>XP : <span id="xp"></span></p>
+<p>Niveau : <span id="diff"></span></p>
 <div class="bar" id="bar"></div>
 </div>
 
 <div class="card">
 <h2>Choisir un chapitre</h2>
-<button onclick="lesson('add')">Addition</button>
-<button onclick="lesson('fraction')">Fractions</button>
-<button onclick="lesson('equation')">Équations</button>
-<button onclick="lesson('pythagore')">Pythagore</button>
+<button onclick="ouvrirCours('addition')">Addition</button>
+<button onclick="ouvrirCours('fractions')">Fractions</button>
+<button onclick="ouvrirCours('equations')">Équations</button>
+<button onclick="ouvrirCours('pythagore')">Pythagore</button>
 </div>
 </div>
 
 <!-- COURS -->
-<div id="lesson" class="section">
-<div class="card" id="content"></div>
-<button onclick="startQuiz()">S'entraîner</button>
+<div id="cours" class="section">
+<div class="card" id="contenuCours"></div>
+<button onclick="lancerQuiz()">S'entraîner</button>
 </div>
 
 <!-- QUIZ -->
 <div id="quiz" class="section">
 <div class="card">
-<h2 id="q"></h2>
-<input id="rep" placeholder="Ta réponse">
-<button onclick="check()">Valider</button>
-<p id="fb"></p>
+<h2 id="question"></h2>
+<input id="reponse" placeholder="Ta réponse">
+<button onclick="verifier()">Valider</button>
+<p id="feedback"></p>
 </div>
 </div>
 
-<!-- NAV -->
+<!-- NAVIGATION -->
 <div class="nav">
-<button onclick="show('home')">🏠</button>
-<button onclick="show('lesson')">📚</button>
-<button onclick="show('quiz')">🎮</button>
+<button onclick="afficher('accueil')">🏠</button>
+<button onclick="afficher('cours')">📚</button>
+<button onclick="afficher('quiz')">🎮</button>
 </div>
 
 <script>
 
-let state = JSON.parse(localStorage.getItem("math")) || {
+let etat = JSON.parse(localStorage.getItem("mathmagique")) || {
 xp:0,
-difficulty:1,
-lesson:"add"
+difficulte:1,
+chapitre:"addition"
 };
 
-let correct = 0;
+let bonneReponse = 0;
 
-/* NAV */
-function show(id){
+/* SON */
+function jouerSon(){
+let audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3");
+audio.play();
+}
+
+/* NAVIGATION */
+function afficher(id){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 }
 
-/* COURS ULTRA DÉTAILLÉS */
-function lesson(id){
-state.lesson=id;
-show("lesson");
+/* COURS */
+function ouvrirCours(chap){
+etat.chapitre = chap;
+afficher("cours");
 
-let c="";
+let texte = "";
 
-if(id==="add"){
-c=`
+if(chap==="addition"){
+texte = `
 <h2>Addition</h2>
-<p>L’addition permet d’assembler plusieurs nombres pour obtenir un total.</p>
+<p>L’addition permet d’additionner plusieurs nombres.</p>
 
 <h3>Exemple :</h3>
-<p>12 + 8 = 20</p>
+<p>15 + 5 = 20</p>
 
 <h3>Propriétés :</h3>
-<p>• Commutativité : a + b = b + a</p>
-<p>• Associativité : (a + b) + c = a + (b + c)</p>
+<p>• a + b = b + a</p>
+<p>• (a + b) + c = a + (b + c)</p>
 
 <h3>Astuce :</h3>
-<p>12 + 8 → (10 + 2) + 8 → 10 + 10 = 20</p>
-
-<h3>À retenir :</h3>
-<p>L’addition est la base de toutes les opérations.</p>
+<p>Décompose : 15 + 5 = 10 + 10</p>
 `;
 }
 
-if(id==="fraction"){
-c=`
+if(chap==="fractions"){
+texte = `
 <h2>Fractions</h2>
 <p>Une fraction représente une partie d’un tout.</p>
 
@@ -191,37 +180,31 @@ c=`
 <p>1/2 + 1/2 = 1</p>
 
 <h3>Règle :</h3>
-<p>Pour additionner :</p>
-<p>→ même dénominateur obligatoire</p>
+<p>Les dénominateurs doivent être identiques.</p>
 
 <h3>Exemple :</h3>
 <p>1/3 + 2/3 = 3/3 = 1</p>
-
-<h3>Attention :</h3>
-<p>1/2 + 1/3 ≠ 2/5</p>
 `;
 }
 
-if(id==="equation"){
-c=`
+if(chap==="equations"){
+texte = `
 <h2>Équations</h2>
-<p>Une équation sert à trouver une inconnue.</p>
+<p>Une équation permet de trouver une inconnue.</p>
 
 <h3>Exemple :</h3>
 <p>x + 5 = 9</p>
 
-<h3>Méthode :</h3>
-<p>On isole x :</p>
-<p>x = 9 - 5</p>
-<p>x = 4</p>
+<h3>Solution :</h3>
+<p>x = 9 - 5 = 4</p>
 
 <h3>Règle :</h3>
 <p>On fait la même opération des deux côtés.</p>
 `;
 }
 
-if(id==="pythagore"){
-c=`
+if(chap==="pythagore"){
+texte = `
 <h2>Théorème de Pythagore</h2>
 
 <p>Dans un triangle rectangle :</p>
@@ -229,81 +212,78 @@ c=`
 <p><b>a² + b² = c²</b></p>
 
 <h3>Exemple :</h3>
-<p>3² + 4² = 9 + 16 = 25</p>
-<p>c = 5</p>
-
-<h3>Condition :</h3>
-<p>Le triangle doit être rectangle.</p>
+<p>3² + 4² = 25 → c = 5</p>
 `;
 }
 
-document.getElementById("content").innerHTML=c;
+document.getElementById("contenuCours").innerHTML = texte;
 }
 
 /* QUIZ */
-function startQuiz(){
-show("quiz");
-newQ();
+function lancerQuiz(){
+afficher("quiz");
+nouvelleQuestion();
 }
 
-function newQ(){
+function nouvelleQuestion(){
 let a = Math.floor(Math.random()*10)+1;
 let b = Math.floor(Math.random()*10)+1;
 
-if(state.lesson==="add"){
-correct = a+b;
-document.getElementById("q").innerText = a+" + "+b;
+if(etat.chapitre==="addition"){
+bonneReponse = a + b;
+question.innerText = a + " + " + b;
 }
 
-if(state.lesson==="fraction"){
-correct = 1;
-document.getElementById("q").innerText = "1/2 + 1/2";
+if(etat.chapitre==="fractions"){
+bonneReponse = 1;
+question.innerText = "1/2 + 1/2";
 }
 
-if(state.lesson==="equation"){
-correct = 4;
-document.getElementById("q").innerText = "x + 5 = 9";
+if(etat.chapitre==="equations"){
+bonneReponse = 4;
+question.innerText = "x + 5 = 9";
 }
 
-if(state.lesson==="pythagore"){
-correct = 5;
-document.getElementById("q").innerText = "3² + 4² = ?";
+if(etat.chapitre==="pythagore"){
+bonneReponse = 5;
+question.innerText = "3² + 4² = ?";
 }
 }
 
-/* CHECK */
-function check(){
-let val = parseInt(document.getElementById("rep").value);
+/* VERIFICATION */
+function verifier(){
+let val = parseInt(document.getElementById("reponse").value);
 
-if(val === correct){
-document.getElementById("fb").innerText="✅ Bonne réponse !";
-state.xp++;
-state.difficulty += 0.2;
+if(val === bonneReponse){
+feedback.innerText = "✅ Bonne réponse !";
+jouerSon();
+etat.xp++;
+etat.difficulte += 0.2;
 }else{
-document.getElementById("fb").innerText="❌ Mauvaise réponse. Réponse: "+correct;
-state.difficulty -= 0.2;
+feedback.innerText = "❌ Mauvaise réponse. Réponse : " + bonneReponse;
+etat.difficulte -= 0.2;
 }
 
-if(state.difficulty<1) state.difficulty=1;
+if(etat.difficulte < 1) etat.difficulte = 1;
 
-save();
-update();
-newQ();
+sauvegarder();
+mettreAJour();
+nouvelleQuestion();
 }
 
-/* SAVE */
-function save(){
-localStorage.setItem("math", JSON.stringify(state));
+/* SAUVEGARDE */
+function sauvegarder(){
+localStorage.setItem("mathmagique", JSON.stringify(etat));
 }
 
 /* UI */
-function update(){
-document.getElementById("xp").innerText = state.xp;
-document.getElementById("diff").innerText = state.difficulty.toFixed(1);
-document.getElementById("bar").style.width = (state.xp%10)*10+"%";
+function mettreAJour(){
+xp.innerText = etat.xp;
+diff.innerText = etat.difficulte.toFixed(1);
+bar.style.width = (etat.xp % 10) * 10 + "%";
 }
 
-update();
+mettreAJour();
 
 </script>
 
