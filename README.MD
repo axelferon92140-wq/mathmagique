@@ -4,7 +4,7 @@
 
 ## 🚀 Démo en ligne
 
-[Voir le site](https://ton-pseudo.github.io/mathsbts)
+[Voir le site](https://axelferon92140-wq.github.io/MathsBts/)
 
 -----
 
